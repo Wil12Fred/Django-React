@@ -17,13 +17,17 @@ class Table extends Component{
 		data: [],
 	        loaded: false,
 	        placeholder: "Loading...",
+		page : 0,
+		filterText : "",
+		tampage: 5
 	};
 	constructor(props) {
 		super(props);
-		this.loadData();
+		this.loadData(this.state.page);
 	};
-	loadData(){
-		const newUrl = url+this.props.endpoint
+	loadData(page){
+		const newUrl = url+this.props.endpoint+"?page="+page;
+		console.log(newUrl);
 		fetch(`${newUrl}`)
 		.then(response => {
 			if (response.status !== 200) {
@@ -32,9 +36,12 @@ class Table extends Component{
 			var result = response.json();
 			return result;
 		})
-		.then(data => this.setState( {data: data, loaded: true})
+		.then(data => this.setState( {data: data, loaded: true, page: page})
 		);
 	};
+	handleUserInput(filterText) {
+		this.setState({filterText: filterText});
+	}
 	handleRowDel(el) {
 		var index = this.state.data.indexOf(el);
 		this.state.data.splice(index, 1);
@@ -61,22 +68,72 @@ class Table extends Component{
 	};
 	handleProductTable = evt =>{
 	};
+	pageChange(){
+		this.loadData(this.refs.PageUpdate.value);
+	}
 	render() {
-		const {data, loaded, placeholder} = this.state;
+		var dir = this.props.endpoint.split("/");
+		var nameObject = dir[dir.length-1];
+		const {data, loaded, placeholder, filterText, page} = this.state;
 		if(!loaded) return (
-			<p>{placeholder}</p>);
+			<div>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<p>{placeholder}</p>
+				<div align = "center">
+				Page: <br />
+				<input type="number" placeholder = "page" value = {page} ref="PageUpdate" onChange={this.pageChange.bind(this)} />
+				</div>
+				<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
+			</div>
+		);
 		if(data.length ===0 ) return (
-			<p>Empty Table</p>);
+			<div>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<p>Empty Table</p>
+				<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
+				<div align = "center">
+				Page: <br />
+				<input type="number" placeholder = "page" value = {page} ref="PageUpdate" onChange={this.pageChange.bind(this)} />
+				</div>
+			</div>
+		);
 		return(
-			<ProductTable
-				data={data}
-				endpoint={this.props.endpoint}
-				onProductTableUpdate={this.handleProductTable.bind(this)}
-				onRowDel={this.handleRowDel.bind(this)}
-				onRowAdd={this.handleRowAdd.bind(this)}
-			/>
+			<div>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<ProductTable
+					data={data}
+					endpoint={this.props.endpoint}
+					onProductTableUpdate={this.handleProductTable.bind(this)}
+					onRowDel={this.handleRowDel.bind(this)}
+					onRowAdd={this.handleRowAdd.bind(this)}
+				/>
+				<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
+				<div align = "center">
+					Page: <br />
+					<input type="number" placeholder = "page" value = {page} ref="PageUpdate" onChange={this.pageChange.bind(this)} />
+				</div>
+			</div>
 		);
 	};
+}
+
+class SearchBar extends React.Component{
+	state = {
+		filterText: ""
+	}
+	handleChange() {
+		this.setState({filterText: this.refs.filterTextUpdate.value});
+		//this.props.onUserInput(this.refs.filterTextUpdate.value);
+	}
+	render () {
+		return (
+			<div>
+				<div align = "right">
+				<input type="text" placeholder = "Search..." value = {this.state.filterText} ref="filterTextUpdate" onChange={this.handleChange.bind(this)}/>
+				</div>
+			</div>
+		);
+	}
 }
 
 class ProductTable extends Component{
@@ -89,7 +146,6 @@ class ProductTable extends Component{
 		return (
 		<div>
 			{/*<button type="button" onClick={this.props.onRowAdd} className="btn btn-success pull-right"> Add </button>*/}
-			<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
 			<table className="table table-bordered">
 			<thead>
 			  <tr>
@@ -192,6 +248,23 @@ class EditableCell extends React.Component {
 			value["id"];
 	};
 	options = [];
+	loadoptions (type){
+		var newUrl = url+"/api/"+type+"/";
+		fetch(`${newUrl}`)
+		.then(response => {
+			if (response.status !== 200) {
+				return this.setState({ placeholder: "Something went wrong" });
+			}
+			var result = response.json();
+			return result;
+		}).then( value => {
+			value.map(el => {
+				if(this.props.cellData.type === "author"){
+					this.options.push(this.getAuthorValue(el));
+				}
+			});
+		});
+	}
 	constructor (props){
 		super(props);
 		if(classes.hasOwnProperty(this.props.cellData.type)){
@@ -208,22 +281,8 @@ class EditableCell extends React.Component {
 				if(this.props.cellData.type === "author"){
 					var newValue = this.getAuthorValue(value);
 					this.setState({input: newValue, loaded: true});
+					this.loadoptions(this.props.cellData.type);
 				}
-			});
-			var newUrl = url+"/api/"+this.props.cellData.type+"/";
-			fetch(`${newUrl}`)
-			.then(response => {
-				if (response.status !== 200) {
-					return this.setState({ placeholder: "Something went wrong" });
-				}
-				var result = response.json();
-				return result;
-			}).then( value => {
-				value.map(el => {
-					if(this.props.cellData.type === "author"){
-						this.options.push(this.getAuthorValue(el));
-					}
-				});
 			});
 		} else {
 			this.state = {input: this.props.cellData.value};

@@ -1,4 +1,5 @@
 from library.models import Publisher, Author, Book
+from django.db.models import Count
 from library.serializers import PublisherSerializer, AuthorSerializer, BookSerializer
 from rest_framework import generics
 from rest_framework.decorators import api_view
@@ -25,9 +26,27 @@ class AuthorDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
+class AuthorPageView(generics.ListCreateAPIView):
+    model = Author
+    serializer_class = AuthorSerializer
+    def get_queryset(self):
+        page = int(self.request.query_params.get('page'))
+        tampage = 5;
+        queryset = Author.objects.annotate(first_name_count=Count('first_name')).order_by('-first_name_count')[page*tampage:(page+1)*tampage];
+        return queryset
+
 class BookListCreate(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+class BookPageView(generics.ListCreateAPIView):
+    model = Book
+    serializer_class = BookSerializer
+    def get_queryset(self):
+        page = int(self.request.query_params.get('page'))
+        tampage = 5;
+        queryset = Book.objects.annotate(title_count=Count('title')).order_by('-title_count')[page*tampage:(page+1)*tampage];
+        return queryset
 
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
@@ -88,3 +107,9 @@ def delete_book(request, pk):
     book = get_object_or_404(Book, id=pk)
     book.delete()
     return Response({"message": "Deleted"})
+
+def page_book(request, pk):
+    book = Book.objects.annotate(Count('title')).order_by('-title_count')[:pk]
+    serializer = BookSerializer(book)
+    return Response(serializer.data)
+

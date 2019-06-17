@@ -16,5 +16,9 @@ urlpatterns = [
         views.AuthorDeleteView.as_view(), name="delete_author"), 
     url(r'^api/book=(?P<pk>\d+)/delete/$', 
         views.BookDeleteView.as_view(), name="delete_book"), 
+    url(r'^api/book$', 
+        views.BookPageView.as_view(), name="page_book"), 
+    url(r'^api/author$', 
+        views.AuthorPageView.as_view(), name="author_book"), 
 ]
 
