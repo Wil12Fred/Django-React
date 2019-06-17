@@ -17,6 +17,7 @@ import Register from "./containers/auth/RegisterContainer";
 import ChangePassword from "./containers/auth/ChangePasswordContainer";
 import {Publisher, Book, Author} from "./components/App";
 import FormAuthor from "./containers/RegisterAuthor";
+import FormBook from "./containers/RegisterBook";
 //import Products from "./components/EditableTable";
 
 export const history = createBrowserHistory();
@@ -32,6 +33,7 @@ ReactDOM.render(
           <PrivateRoute exact path="/author" component={Author} />
           <PrivateRoute exact path="/author/register" component={FormAuthor} />
           <PrivateRoute exact path="/book" component={Book} />
+          <PrivateRoute exact path="/book/register" component={FormBook} />
           <AuthenticatedRoute exact path="/login" component={Login} />
           <AuthenticatedRoute exact path="/register" component={Register} />
           <Route exact path="/signout" render={() => <Redirect to="/" />} />
