@@ -37,7 +37,7 @@ class Navigation extends Component {
     }
   };
 
-  userIsAuthenticatedEmail() {
+  userIsAuthenticatedLibrary() {
     if (this.props.authenticated) {
       return [
         <UncontrolledDropdown
@@ -46,7 +46,7 @@ class Navigation extends Component {
           key="email-auth"
         >
           <DropdownToggle nav caret className="nav-link">
-            Account
+	      Library
           </DropdownToggle>
           <DropdownMenu className="dropdown-menu">
             <DropdownItem className="inverse-dropdown">
@@ -67,6 +67,24 @@ class Navigation extends Component {
                 Book Details
               </NavLink>
             </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      ];
+    }
+  }
+
+  userIsAuthenticatedEmail() {
+    if (this.props.authenticated) {
+      return [
+        <UncontrolledDropdown
+          nav
+          className="nav-item dropdown"
+          key="email-auth"
+        >
+          <DropdownToggle nav caret className="nav-link">
+            Account
+          </DropdownToggle>
+          <DropdownMenu className="dropdown-menu">
             <DropdownItem className="inverse-dropdown">
               <span key="signout" onClick={this.props.logoutAction}>
                 <NavLink
@@ -154,6 +172,7 @@ class Navigation extends Component {
                 </NavLink>
               </NavItem>
               {this.userIsNotAuthenticated()}
+              {this.userIsAuthenticatedLibrary()}
               {this.userIsAuthenticatedEmail()}
             </Nav>
           </Collapse>

@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import key from "weak-key";
 import { Link } from "react-router-dom";
-import ReactDataList from "react-datalist"
+import ReactDataList from "react-datalist";
 
-import {backendUrl} from "../actions/backendUrl"
+import {backendUrl} from "../actions/backendUrl";
 
 let url = process.env.REACT_APP_DEV_URL || backendUrl;
 
@@ -218,12 +218,10 @@ class EditableCell extends React.Component {
 				}
 				var result = response.json();
 				return result;
-			})
-			.then( value => {
+			}).then( value => {
 				value.map(el => {
 					if(this.props.cellData.type === "author"){
 						this.options.push(this.getAuthorValue(el));
-						console.log(this.getAuthorValue(el));
 					}
 				});
 			});
@@ -260,7 +258,7 @@ class EditableCell extends React.Component {
 			return (
 				<td >
 				<ReactDataList
-					list = "fruit"
+					list = "authors"
 					options = {this.options} 
 					initialFilter = {input}
 					onOptionSelected = {this.onOptionSelected.bind(this)}
