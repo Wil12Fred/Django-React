@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import key from "weak-key";
 import { Link } from "react-router-dom";
 import ReactDataList from "react-datalist";
-
+import YearPicker from "react-year-picker";
 import {backendUrl} from "../actions/backendUrl";
 
 let url = process.env.REACT_APP_DEV_URL || backendUrl;
@@ -21,12 +21,31 @@ class Table extends Component{
 		filterText : "",
 		tampage: 5
 	};
+	extra = {
+		page: 0,
+		filterText: "",
+		filterAuthor: "",
+		filterYear: ""
+	};
 	constructor(props) {
 		super(props);
-		this.loadData(this.state.page);
+		this.loadData(this.state.page, this.state.filterText);
 	};
-	loadData(page){
-		const newUrl = url+this.props.endpoint+"?page="+page;
+	loadData(){
+		var page = this.extra.page;
+		var filter = this.extra.filterText;
+		var filterAuthor = this.extra.filterAuthor;
+		var filterYear = this.extra.filterYear;
+		var newUrl = url+this.props.endpoint+"filter?page="+page;
+		if(filter !== ""){
+			newUrl += "&filter=" + filter;
+		}
+		if(filterAuthor != ""){
+			newUrl += "&author=" + filterAuthor;
+		}
+		if(filterYear != ""){
+			newUrl += "&year=" + filterYear;
+		}
 		console.log(newUrl);
 		fetch(`${newUrl}`)
 		.then(response => {
@@ -36,9 +55,26 @@ class Table extends Component{
 			var result = response.json();
 			return result;
 		})
-		.then(data => this.setState( {data: data, loaded: true, page: page})
+		.then(data => this.setState( {data: data, loaded: true, page: page, filterText: filter})
 		);
 	};
+	loadPage(page){
+		this.extra.page = page;
+		this.extra.filterText = this.state.filterText;
+		this.loadData();
+	};
+	filterTextQuery(filter){
+		this.extra.page = 0;
+		this.extra.filterText = filter;
+		this.loadData();
+	}
+	filterAuthorYearQuery(author, year){
+		this.extra.page = 0;
+		this.extra.filterText = "";
+		this.extra.filterAuthor = author;
+		this.extra.fitlerYear = year;
+		this.loadData();
+	}
 	handleUserInput(filterText) {
 		this.setState({filterText: filterText});
 	}
@@ -64,12 +100,11 @@ class Table extends Component{
 		};
 		const newUrl = url + this.props.endpoint + "/";
 		fetch(`${newUrl}`, conf).then(response => console.log(response));
-		this.loadData();
 	};
 	handleProductTable = evt =>{
 	};
 	pageChange(){
-		this.loadData(this.refs.PageUpdate.value);
+		this.loadPage(this.refs.PageUpdate.value);
 	}
 	render() {
 		var dir = this.props.endpoint.split("/");
@@ -77,7 +112,7 @@ class Table extends Component{
 		const {data, loaded, placeholder, filterText, page} = this.state;
 		if(!loaded) return (
 			<div>
-				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)} objectName = {nameObject} />
 				<p>{placeholder}</p>
 				<div align = "center">
 				Page: <br />
@@ -88,7 +123,7 @@ class Table extends Component{
 		);
 		if(data.length ===0 ) return (
 			<div>
-				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)} onFilterOptions={this.filterAuthorYearQuery.bind(this)} onClickFinder={this.filterTextQuery.bind(this)} objectName = {nameObject}/>
 				<p>Empty Table</p>
 				<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
 				<div align = "center">
@@ -99,7 +134,7 @@ class Table extends Component{
 		);
 		return(
 			<div>
-				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)}/>
+				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)} onFilterOptions={this.filterAuthorYearQuery.bind(this)} onClickFinder={this.filterTextQuery.bind(this)} objectName = {nameObject}/>
 				<ProductTable
 					data={data}
 					endpoint={this.props.endpoint}
@@ -117,20 +152,115 @@ class Table extends Component{
 	};
 }
 
-class SearchBar extends React.Component{
+class SearchBar extends Component{
 	state = {
-		filterText: ""
+		filterText: "",
+		filterAuthor: "",
+		filterYear: ""
+	};
+	options = [];
+	getAuthorValue(value){
+		return value["first_name"] + 
+			" " + 
+			value["last_name"] +
+			": " +
+			value["id"];
+	};
+	loadoptions (type){
+		var newUrl = url+"/api/"+type+"/";
+		fetch(`${newUrl}`)
+		.then(response => {
+			if (response.status !== 200) {
+				return this.setState({ placeholder: "Something went wrong" });
+			}
+			var result = response.json();
+			return result;
+		}).then( value => {
+			value.map(el => {
+				if(type === "author"){
+					this.options.push(this.getAuthorValue(el));
+				}
+			});
+		});
+	}
+	constructor (props){
+		super(props);
+		if(this.props.objectName === "book"){
+			this.loadoptions("author");
+		}
 	}
 	handleChange() {
 		this.setState({filterText: this.refs.filterTextUpdate.value});
 		//this.props.onUserInput(this.refs.filterTextUpdate.value);
+	};
+	onClickFinder(evt) {
+		this.props.onClickFinder(this.state.filterText);
+	};
+	onYearChange(date){
+		//console.log(date.toString());
+		this.state.filterYear = date;
+	};
+	onAuthorChange(evt){
+		if(evt.target.value===""){
+			this.state.filterAuthor = "";
+		}
+	};
+	onOptionSelected(option){
+		var authorData = option.split("");
+		this.state.filterAuthor= authorData[authorData.length-1];
+	}
+	filterAction(){
+		console.log(this.state.filterAuthor);
+		this.props.onFilterOptions(this.state.filterAuthor, this.state.filterYear);
+	}
+	loadFilter(objectName){
+		if(objectName === "book"){
+			return [
+				<div align="left">
+				<table  >
+					<thead>
+					  <tr>
+					    <th> AUTHOR </th>
+					    <th> PUBLICATION YEAR </th>
+					  </tr>
+					</thead>
+					<tbody>
+						<tr>
+						<td>
+						<ReactDataList
+							list = "authors"
+							options = {this.options} 
+							onInputChange = {this.onAuthorChange.bind(this)}
+							target = "AUTHOR"
+							forcePoly = {true}
+							onOptionSelected = {this.onOptionSelected.bind(this)}
+						/>
+						</td>
+						<td>
+						<div align="center">
+						<YearPicker onChange={this.onYearChange.bind(this)} />
+						</div>
+						</td>
+						<td>
+							<button type="buttom" onClick={this.filterAction.bind(this)} className="btn btn-success pull-right"> Filter </button>
+						</td>
+						</tr>
+					</tbody>
+				</table>
+				<br />
+				<br />
+				</div>
+			];
+		}
 	}
 	render () {
 		return (
 			<div>
 				<div align = "right">
 				<input type="text" placeholder = "Search..." value = {this.state.filterText} ref="filterTextUpdate" onChange={this.handleChange.bind(this)}/>
+				<input type="button" value="Find" onClick={this.onClickFinder.bind(this)}/>
 				</div>
+				{this.loadFilter(this.props.objectName)}
 			</div>
 		);
 	}
