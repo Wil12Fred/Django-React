@@ -72,7 +72,8 @@ class Table extends Component{
 		this.extra.page = 0;
 		this.extra.filterText = "";
 		this.extra.filterAuthor = author;
-		this.extra.fitlerYear = year;
+		this.extra.filterYear = year;
+		console.log(this.extra);
 		this.loadData();
 	}
 	handleUserInput(filterText) {
@@ -121,7 +122,8 @@ class Table extends Component{
 				<Link to = {nameObject+"/register"} className = {classes.links}> Add New Item </Link>
 			</div>
 		);
-		if(data.length ===0 ) return (
+		console.log(data);
+		if(data.length === 0 ) return (
 			<div>
 				<SearchBar filterText = {filterText} onUserInput = {this.handleUserInput.bind(this)} onFilterOptions={this.filterAuthorYearQuery.bind(this)} onClickFinder={this.filterTextQuery.bind(this)} objectName = {nameObject}/>
 				<p>Empty Table</p>
@@ -197,7 +199,7 @@ class SearchBar extends Component{
 		this.props.onClickFinder(this.state.filterText);
 	};
 	onYearChange(date){
-		//console.log(date.toString());
+		console.log(date.toString());
 		this.state.filterYear = date;
 	};
 	onAuthorChange(evt){
@@ -206,11 +208,10 @@ class SearchBar extends Component{
 		}
 	};
 	onOptionSelected(option){
-		var authorData = option.split("");
+		var authorData = option.split(" ");
 		this.state.filterAuthor= authorData[authorData.length-1];
 	}
 	filterAction(){
-		console.log(this.state.filterAuthor);
 		this.props.onFilterOptions(this.state.filterAuthor, this.state.filterYear);
 	}
 	loadFilter(objectName){
