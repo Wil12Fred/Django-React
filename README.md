@@ -22,3 +22,6 @@
 5. python3 manage.py createsuperuser
 3. python3 manage.py runserver
 
+### Based on
+
+* https://github.com/opmftw/react-django-login-example
