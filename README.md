@@ -11,10 +11,12 @@
 
 - Clone the repo
 #### Frontend
-1. cd frontend && npm install
-2. npm start (<- resolve dependencies)
-3. enter your backend url in actions/backendUrl.js or add an environment variable named REACT_APP_DEV_URL 
-4. npm start
+1. cd frontend
+2. npm install npm@latest -g
+3. npm install
+4. npm build & npm install
+5. enter your backend url in actions/backendUrl.js or add an environment variable named REACT_APP_DEV_URL 
+6. npm start
 
 #### Backend
 1. cd backend, pipenv shell, pipenv install
