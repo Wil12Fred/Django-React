@@ -72,7 +72,8 @@ class BookFilterView(generics.ListCreateAPIView):
             queryBook = Book.objects.all();
         if(self.request.query_params.get('year')):
             year=self.request.query_params.get('year');
-            queryBook = queryBook.objects.filter(publication_date__year=year);
+            print ("Year: " + year)
+            queryBook = queryBook.filter(publication_date__year=year);
         if(self.request.query_params.get('filter')):
             queryset = []
             filterQ = self.request.query_params.get('filter')
