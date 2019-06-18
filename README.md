@@ -12,8 +12,10 @@
 - Clone the repo
 #### Frontend
 1. cd frontend && npm install
-2. enter your backend url in actions/backendUrl.js or add an environment variable named REACT_APP_DEV_URL 
-3. npm start
+2. npm start (<- resolve dependencies)
+3. enter your backend url in actions/backendUrl.js or add an environment variable named REACT_APP_DEV_URL 
+4. npm start
+
 #### Backend
 1. cd backend, pipenv shell, pipenv install
 2. python3 manage.py makemigrations custom_user
