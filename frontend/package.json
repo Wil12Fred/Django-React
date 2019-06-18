@@ -29,6 +29,7 @@
     "react-datalist-input": "^1.1.26",
     "react-dev-utils": "^9.0.1",
     "react-devtools": "^3.6.1",
+    "react-year-picker": "^0.3.7",
     "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "weak-key": "^1.0.1"

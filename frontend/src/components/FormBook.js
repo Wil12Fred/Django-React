@@ -78,13 +78,15 @@ class InnerFormBook extends Component{
 		return (
 		<div className={classes.container}>
 			<form onSubmit={handleSubmit}>
-			Author: 
+			AUTHOR
 			<ReactDataList
 				list = "authors"
 				options = {this.options}
 				onOptionSelected = {this.onOptionSelected.bind(this)}
 				label = "Author"
 				getController = {getController}
+				autoPosition = {false}
+				forcePoly = {true}
 				onInputChange = {this.onChange.bind(this)}
 			/>
 			<TextField

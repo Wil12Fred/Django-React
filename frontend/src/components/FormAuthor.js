@@ -93,14 +93,28 @@ const EnhancedForm = withFormik({
 		email: Yup.string().email()
 	}),
 	handleSubmit: (
-		{first_name, last_name},
+		{first_name, last_name, email},
 		{props, setSubmitting, setErrors}
 	) => {
-		props.updatePage(
-			props.dispatch,
-			"/author",
-			props.history.push
-		);
+		var newData = {first_name, last_name, email};
+		const conf ={
+			method: "POST",
+			body: JSON.stringify(newData),
+			headers: {
+				"Content-Type": "application/json"
+				, Authorization: `JWT ${localStorage.getItem("ecom_token")}`
+			}
+		};
+		const newUrl = url + "/api/author/";
+		fetch(`${newUrl}`, conf).then(response => {
+			if(response.status===201){
+				props.updatePage(
+					props.dispatch,
+					"/author",
+					props.history.push
+				);
+			}
+		});
 	},
 	displayName: "AuthorForm"
 })(InnerFormAuthor);
