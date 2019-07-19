@@ -73,6 +73,8 @@ class SuministroPorCodigo(generics.ListCreateAPIView):
             a.monto="S/ "+str(random.randrange(1000))
             a.descripcion = querySum[0].servicio.nombre
             a.id = 1
+            a.titular = querySum[0].titular
+            a.codigo = querySum[0].codigo
             newReturn.append(a)
         return newReturn
 
