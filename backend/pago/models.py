@@ -46,5 +46,30 @@ class Pago(models.Model):
     #entidad = models.CharField( max_length=30)
     #validado = models.BooleanField(default=False)
 
+class Pago2(models.Model):
+    tarjeta = models.CharField( max_length=16)
+    #tarjeta_debito = models.BooleanField( default=False)
+    #tipo_tarjeta = models.ForeignKey(Tarjeta, on_delete=models.CASCADE, blank=True, null=True);
+    #vencimiento = MyModel
+    #vencimiento = YearMonthField() #models.DateField(null=True)
+    vencimiento = models.DateField(null=True)
+    cvv = models.CharField( max_length=3, null = True )
+    #monto = models.IntegerField()
+    operacion = models.ForeignKey(Suministro, on_delete=models.CASCADE)
+    #entidad = models.CharField( max_length=30)
+    #validado = models.BooleanField(default=False)
 
+class PagoD(models.Model):
+    tarjeta = models.CharField( max_length=16)
+    #tarjeta_debito = models.BooleanField( default=False)
+    #tipo_tarjeta = models.ForeignKey(Tarjeta, on_delete=models.CASCADE, blank=True, null=True);
+    #vencimiento = MyModel
+    #vencimiento = YearMonthField() #models.DateField(null=True)
+    vencimiento = models.DateField(null=True)
+    cvv = models.CharField( max_length=3, null = True )
+    #monto = models.IntegerField()
+    #operacion = models.ForeignKey(Suministro, on_delete=models.CASCADE)
+    operacion = models.IntegerField()
+    #entidad = models.CharField( max_length=30)
+    #validado = models.BooleanField(default=False)
 # Create your models here.
