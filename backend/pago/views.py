@@ -6,8 +6,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view 
 from rest_framework import generics
 from rest_framework.response import Response 
-from pago.models import Pago, Entidad, Servicio, Suministro, Tarjeta, ReturnSuministro
-from .serializers import PagoSerializer, EntidadSerializer, ServicioSerializer, SuministroSerializer, TarjetaSerializer, ReturnSuministroSerializer
+from pago.models import Pago, Entidad, Servicio, Suministro, Tarjeta, ReturnSuministro, Pago2, PagoD
+from .serializers import PagoSerializer, EntidadSerializer, ServicioSerializer, SuministroSerializer, TarjetaSerializer, ReturnSuministroSerializer, Pago2Serializer, PagoDSerializer
 import random
 
 class EntidadListCreate(generics.ListCreateAPIView):
@@ -35,12 +35,28 @@ class SuministroDetailView(generics.RetrieveAPIView):
     serializer_class = SuministroSerializer
 
 class PagoListCreate(generics.ListCreateAPIView):
-    queryset = Pago.objects.all()
-    serializer_class = PagoSerializer
+    queryset = Pago2.objects.all()
+    serializer_class = Pago2Serializer
 
 class PagoDetailView(generics.RetrieveAPIView):
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
+
+class Pago2ListCreate(generics.ListCreateAPIView):
+    queryset = Pago2.objects.all()
+    serializer_class = Pago2Serializer
+
+class Pago2DetailView(generics.RetrieveAPIView):
+    queryset = Pago2.objects.all()
+    serializer_class = Pago2Serializer
+
+class PagoDListCreate(generics.ListCreateAPIView):
+    queryset = PagoD.objects.all()
+    serializer_class = PagoDSerializer
+
+class PagoDDetailView(generics.RetrieveAPIView):
+    queryset = PagoD.objects.all()
+    serializer_class = PagoDSerializer
 
 class TarjetaListCreate(generics.ListCreateAPIView):
     queryset = Tarjeta.objects.all()
@@ -57,7 +73,6 @@ class ServicioPorEntidadView(generics.ListCreateAPIView):
         entidadId = int(self.request.query_params.get('entidad'))
         queryset = Servicio.objects.filter(entidad=entidadId)
         return queryset
-
 
 class SuministroPorCodigo(generics.ListCreateAPIView):
     model = ReturnSuministro
@@ -77,4 +92,3 @@ class SuministroPorCodigo(generics.ListCreateAPIView):
             a.codigo = querySum[0].codigo
             newReturn.append(a)
         return newReturn
-

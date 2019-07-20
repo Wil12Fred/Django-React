@@ -2,6 +2,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    url('api/dpago/$', views.PagoDListCreate.as_view() ),
+    url(r'^api/dpago=(?P<pk>\d+)/detail$', views.PagoDDetailView.as_view(), name = "nuevo_pago_detail"),
+    url('api/nuevopago/$', views.Pago2ListCreate.as_view() ),
+    url(r'^api/nuevopago=(?P<pk>\d+)/detail$', views.PagoDetailView.as_view(), name = "nuevo_pago_detail"),
     url('api/pago/$', views.PagoListCreate.as_view() ),
     url(r'^api/pago=(?P<pk>\d+)/detail$', views.PagoDetailView.as_view(), name = "pago_detail"),
     url('api/entidad/$', views.EntidadListCreate.as_view() ),
