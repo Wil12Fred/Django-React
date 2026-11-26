@@ -1,4 +1,4 @@
-name: build
+name: CI
 on: [push, pull_request]
 jobs:
   backend:
@@ -24,8 +24,7 @@ jobs:
         with:
           node-version: 24
       - run: npm ci
-      # Create React App fails the build on lint warnings when CI=true; the 2019
-      # frontend still has some, so build it the way it builds locally.
+      - run: npm run lint
+      # CI=true (set by Actions) makes Create React App fail on any lint warning.
       - run: npm run build
-        env:
-          CI: false
+      - run: npm test
