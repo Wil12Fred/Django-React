@@ -24,4 +24,8 @@ jobs:
         with:
           node-version: 24
       - run: npm ci
+      # Create React App fails the build on lint warnings when CI=true; the 2019
+      # frontend still has some, so build it the way it builds locally.
       - run: npm run build
+        env:
+          CI: false
