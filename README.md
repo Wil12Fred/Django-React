@@ -1,4 +1,6 @@
-# Django-React — library management with JWT auth
+# django-react-library
+
+> library management with JWT auth
 
 A React + Redux single-page app on top of a Django REST Framework API. Users
 register, log in with JWT and manage a small library (authors, books,
