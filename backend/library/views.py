@@ -44,8 +44,8 @@ class AuthorFilterView(generics.ListCreateAPIView):
         if(self.request.query_params.get('filter')):
             filterQ = self.request.query_params.get('filter')
             queryset = Author.objects.filter(
-                    Q(first_name__icontains(filterQ)) |
-                    Q(last_name__icontains(filterQ)))
+                    Q(first_name__icontains=filterQ) |
+                    Q(last_name__icontains=filterQ))
         else:
             queryset = Author.objects.all()
         if(self.request.query_params.get('page')):
