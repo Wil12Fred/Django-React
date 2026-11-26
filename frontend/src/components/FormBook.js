@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Yup from "yup"
 import { withFormik } from "formik";
 import { withStyles } from "@material-ui/styles";
@@ -14,19 +13,17 @@ import { backendUrl } from "../actions/backendUrl";
 
 let url = process.env.REACT_APP_DEV_URL || backendUrl;
 
-var ReactDataListController ;
-
 class InnerFormBook extends Component{
 	getAuthorValue(value){
 		return value["first_name"] +
 			" " +
-			value ["last_name"] +
+			value["last_name"] +
 			": " +
 			value["id"];
 	};
 	onOptionSelected(option){
 		var res = option.split(" ");
-		this.props.values.author = parseInt(res[res.length-1]);
+		this.props.values.author = parseInt(res[res.length-1], 10);
 	};
 	isNormalInteger(str) {
 		    var n = Math.floor(Number(str));
@@ -43,7 +40,7 @@ class InnerFormBook extends Component{
 			var result = response.json();
 			return result;
 		}).then( value => {
-			value.map(el => {
+			value.forEach(el => {
 				this.options.push(this.getAuthorValue(el));
 			});
 		});
@@ -55,24 +52,22 @@ class InnerFormBook extends Component{
 		res = evt.target.value.split(" ");
 		if( res.length !== 0){
 			if(this.isNormalInteger(res[res.length-1])) {
-				this.props.values.author = parseInt(res[res.length-1]);
+				this.props.values.author = parseInt(res[res.length-1], 10);
 			}
 		}
 	};
 	render(){
-		var getController = function(controller) {
-			ReactDataListController=controller;
+		var getController = controller => {
+			this.dataListController = controller;
 		};
 		const {
 			values,
 			touched,
 			errors,
-			dirty,
 			isSubmitting,
 			handleChange,
 			handleBlur,
 			handleSubmit,
-			handleReset,
 			classes
 		} = this.props;
 		return (

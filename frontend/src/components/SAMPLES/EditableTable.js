@@ -45,7 +45,7 @@ var products = this.state.products.slice();
   var newProducts = products.map(function(product) {
 
     for (var key in product) {
-      if (key == item.name && product.id == item.id) {
+      if (key === item.name && product.id === item.id) {
         product[key] = item.value;
 
       }
@@ -91,7 +91,7 @@ class ProductTable extends React.Component {
     var filterText = this.props.filterText;
     var product = this.props.products.map(function(product) {
       if (product.name.indexOf(filterText) === -1) {
-        return;
+        return null;
       }
       return (<ProductRow onProductTableUpdate={onProductTableUpdate} product={product} onDelEvent={rowDel.bind(this)} key={product.id}/>)
     });

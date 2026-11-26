@@ -1,10 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Yup from "yup"
-import { withFormik } from "formik";
-import { withStyles } from "@material-ui/styles";
-import Button from "@material-ui/core/Button";
-import { styles } from "./auth/customStylesMui";
 //import {connect} from "react-redux";
 //import {withRouter} from 'react-router-dom'
 
@@ -109,7 +104,7 @@ class FormAuthor extends Component {
   };
   handleSubmit = e => {
     e.preventDefault();
-    const { first_name, last_name, email, valid } = this.state;
+    const { first_name, last_name, email } = this.state;
     const author = { first_name, last_name, email };
     const conf = {
       method: "POST",
@@ -208,7 +203,7 @@ class FormBook extends Component {
     fetch(`${newUrl}`, conf).then(response => console.log(response));
   };
   render() {
-    const { title, author, publication_date, edition, image, copies } = this.state;
+    const { title, publication_date, edition, image, copies } = this.state;
     return (
       <div className="column">
         <form onSubmit={this.handleSubmit}>

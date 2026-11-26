@@ -40,10 +40,10 @@ class Table extends Component{
 		if(filter !== ""){
 			newUrl += "&filter=" + filter;
 		}
-		if(filterAuthor != ""){
+		if(filterAuthor !== ""){
 			newUrl += "&author=" + filterAuthor;
 		}
-		if(filterYear != ""){
+		if(filterYear !== ""){
 			newUrl += "&year=" + filterYear;
 		}
 		console.log(newUrl);
@@ -86,7 +86,7 @@ class Table extends Component{
 	};
 	handleRowAdd(evt){
 		var newData= {};
-		Object.entries(this.state.data[0]).map(
+		Object.entries(this.state.data[0]).forEach(
 			el => {
 				newData[el[0]] = null;
 			}
@@ -178,7 +178,7 @@ class SearchBar extends Component{
 			var result = response.json();
 			return result;
 		}).then( value => {
-			value.map(el => {
+			value.forEach(el => {
 				if(type === "author"){
 					this.options.push(this.getAuthorValue(el));
 				}
@@ -200,16 +200,16 @@ class SearchBar extends Component{
 	};
 	onYearChange(date){
 		console.log(date.toString());
-		this.state.filterYear = date;
+		this.setState({ filterYear: date });
 	};
 	onAuthorChange(evt){
 		if(evt.target.value===""){
-			this.state.filterAuthor = "";
+			this.setState({ filterAuthor: "" });
 		}
 	};
 	onOptionSelected(option){
 		var authorData = option.split(" ");
-		this.state.filterAuthor= authorData[authorData.length-1];
+		this.setState({ filterAuthor: authorData[authorData.length-1] });
 	}
 	filterAction(){
 		this.props.onFilterOptions(this.state.filterAuthor, this.state.filterYear);
@@ -272,8 +272,6 @@ class ProductTable extends Component{
 		var onProductTableUpdate = this.props.onProductTableUpdate;
 		var rowDel = this.props.onRowDel;
 		var data = this.props.data;
-		var dir = this.props.endpoint.split("/");
-		var nameObject = dir[dir.length-1];
 		return (
 		<div>
 			{/*<button type="button" onClick={this.props.onRowAdd} className="btn btn-success pull-right"> Add </button>*/}
@@ -389,7 +387,7 @@ class EditableCell extends React.Component {
 			var result = response.json();
 			return result;
 		}).then( value => {
-			value.map(el => {
+			value.forEach(el => {
 				if(this.props.cellData.type === "author"){
 					this.options.push(this.getAuthorValue(el));
 				}
@@ -427,7 +425,7 @@ class EditableCell extends React.Component {
 		var res = option.split(" ");
 		var target = {
 			name: this.props.cellData.type,
-			value: parseInt(res[res.length-1])
+			value: parseInt(res[res.length-1], 10)
 		}
 		this.props.onProductTableUpdate(target);
 	}

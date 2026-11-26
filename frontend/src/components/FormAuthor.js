@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import Yup from "yup"
 import { withFormik } from "formik";
 import { withStyles } from "@material-ui/styles";
@@ -19,12 +18,10 @@ class InnerFormAuthor extends Component{
 			values,
 			touched,
 			errors,
-			dirty,
 			isSubmitting,
 			handleChange,
 			handleBlur,
 			handleSubmit,
-			handleReset,
 			classes
 		} = this.props;
 		return (
