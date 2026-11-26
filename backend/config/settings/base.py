@@ -10,7 +10,6 @@ INSTALLED_APPS = [
     # Personal,
     'custom_user',
     'library',
-    'pago',
 
     #BASE
     'django.contrib.admin',
