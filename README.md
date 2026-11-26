@@ -22,11 +22,14 @@ Requires [uv](https://docs.astral.sh/uv/) and Python 3.10–3.12.
 ```bash
 cd backend
 uv sync
-uv run python manage.py migrate         # SQLite, backend/db.sqlite3
+uv run python manage.py migrate         # creates backend/db.sqlite3
 uv run python manage.py createsuperuser
 uv run python manage.py runserver       # http://127.0.0.1:8000
 uv run python manage.py test
 ```
+
+A `db.sqlite3` left over from the 2019 version (it used to be committed)
+has an incompatible migration history: delete it and migrate again.
 
 Example session (real output):
 
